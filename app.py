@@ -32,7 +32,7 @@ mapbox_access_token = 'pk.eyJ1IjoibWloYWx3MjgiLCJhIjoiY2psejZqZThnMXRndDNxcDFpdW
 def initialize():
     df = pd.read_csv('../NYC_Crimes_Dash_App/crimes_app_data.csv')
     df.drop('Unnamed: 0', 1, inplace = True)
-    df['Date/Time'] = pd.to_datetime(df['Date/Time'], format = '%m/%d/%Y %H:%M:%S')
+    df['Date/Time'] = pd.to_datetime(df['Date/Time'], format = '%Y-%m-%d %H:%M:%S')
     df.index = df['Date/Time']
     df.drop('Date/Time', 1, inplace = True)
     totalList = []
