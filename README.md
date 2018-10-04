@@ -1,5 +1,5 @@
 ## NYC_Crimes_Dash_App
-This repository contains Dash application of NYC crimes between late 2016 and early 2018.
+This repository contains Dash application of NYC crimes mostly from early 2018.
 
 # APP is under construction and doesn't work for now. :construction_worker::construction:
 
