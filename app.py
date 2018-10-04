@@ -18,11 +18,11 @@ import os
 
 
 app = dash.Dash(__name__)
-#server = app.server
-#if 'DYNO' in os.environ:
-#    app.scripts.append_script({
-#        'external_url': 'https://cdn.rawgit.com/chriddyp/ca0d8f02a1659981a0ea7f013a378bbd/raw/e79f3f789517deec58f41251f7dbb6bee72c44ab/plotly_ga.js'
-#    })
+server = app.server
+if 'DYNO' in os.environ:
+    app.scripts.append_script({
+        'external_url': 'https://cdn.rawgit.com/chriddyp/ca0d8f02a1659981a0ea7f013a378bbd/raw/e79f3f789517deec58f41251f7dbb6bee72c44ab/plotly_ga.js'
+    })
 
 ## server here
 
@@ -31,10 +31,10 @@ mapbox_access_token = 'pk.eyJ1IjoibWloYWx3MjgiLCJhIjoiY2psejZqZThnMXRndDNxcDFpdW
 
 def initialize():
     df = pd.read_csv('../NYC_Crimes_Dash_App/crimes_app_data.csv')
-    df.drop('Unnamed: 0', 1, inplace = True)
+    df.drop('Unnamed: 0', 1, inplace=True)
     df['Date/Time'] = pd.to_datetime(df['Date/Time'], format = '%Y-%m-%d %H:%M:%S')
     df.index = df['Date/Time']
-    df.drop('Date/Time', 1, inplace = True)
+    df.drop('Date/Time', 1, inplace=True)
     totalList = []
     for month in df.groupby(df.index.month):
         dailyList = []
@@ -47,11 +47,11 @@ def initialize():
 app.layout = html.Div([
     html.Div([
         html.Div([
-            html.P(id = 'total_incidents', className = 'totalIncidents'),
-            html.P(id = 'total_incidents_selection', className = 'totalIncidentsSelection'),
-            html.P(id = 'date_value', className = 'dateValue'),
+            html.P(id='total-rides', className='totalRides'),
+            html.P(id ='total-rides-selection', className='totalRideSelection'),
+            html.P(id ='date-value', className='dateValue'),
             dcc.Dropdown(
-                id = 'my_dropdown',
+                id='my-dropdown',
                 options = [
                     {'label': 'January', 'value': 'Jan'},
                     {'label': 'February', 'value': 'Feb'},
@@ -67,8 +67,8 @@ app.layout = html.Div([
                     {'label': 'December', 'value': 'Dec'}
                 ],
                 value = 'Jan',
-                placeholder = 'Please choose a day',
-                className = 'day_picker'
+                placeholder = 'Please choose a month',
+                className='month-picker'
             ),
             html.Div([
                 html.Div([
@@ -78,9 +78,9 @@ app.layout = html.Div([
                         below or by selecting different time frames on the\
                         histogram',
                         className = 'explanationParagraph twelve columns'),
-                dcc.Graph(id = 'map_graph'),
+                dcc.Graph(id = 'map-graph'),
                 dcc.Dropdown(
-                    id = 'bar_selector',
+                    id = 'bar-selector',
                     options = [
                         {'label': '0:00', 'value': '0'},
                         {'label': '1:00', 'value': '1'},
@@ -107,21 +107,21 @@ app.layout = html.Div([
                         {'label': '22:00', 'value': '22'},
                         {'label': '23:00', 'value': '23'}
                     ],
-                    multi = True,
-                    placeholder = 'Select certain hours using\
-                                   the box-select or lasso tool\
-                                   or using the dropdown menu',
-                    className = 'bars'
+                    multi=True,
+                    placeholder='Select certain hours using\
+                                 the box-select or lasso tool\
+                                 or using the dropdown menu',
+                    className='bars'
                 ),
-                dcc.Graph(id = 'histogram'),
-                html.P('', id = 'popupAnnotation', className='popupAnnotation')
+                dcc.Graph(id='histogram'),
+                html.P('', id='popupAnnotation', className='popupAnnotation')
             ],
-            className = 'graph twelve columns'
+            className='graph twelve coluns'
             ),
         ], 
         style={'margin': 'auto auto'}),
         dcc.Slider(
-            id = 'my_slider',
+            id = 'my-slider',
             min = 1,
             step = 1,
             value = 1
@@ -136,7 +136,7 @@ app.layout = html.Div([
             inputStyle={'z-index': '3'}
         ),
     ],
-    className = 'graphSilder ten columns offset-by-one'),
+    className='graphSilder ten columns offset-by-one'),
 ],
 style={'padding-top': '20px'}
 )
@@ -161,7 +161,7 @@ def getValue(value):
     return val
 
 def getIndex(value):
-    if(value == None):
+    if (value == None):
         return 0
     val = {
         'Jan': 0,
@@ -181,13 +181,13 @@ def getIndex(value):
     return val
 
 def getClickIndex(value):
-    if(value==None):
+    if (value == None):
         return 0
     return value['points'][0]['x']
 
 
-@app.callback(Output("my_slider", 'marks'),
-              [Input('my_dropdown', 'value')]
+@app.callback(Output("my-slider", 'marks'),
+              [Input('my-dropdown', 'value')]
 )
 def update_slider_ticks(value):
     marks = {}
@@ -199,38 +199,38 @@ def update_slider_ticks(value):
     return marks
 
 
-@app.callback(Output('my_slider', 'max'),
-              [Input('my_dropdown', 'value')]
+@app.callback(Output('my-slider', 'max'),
+              [Input('my-dropdown', 'value')]
 )
 def update_slider_max(value):
     return getValue(value)
 
 
-@app.callback(Output('bar_selector', 'value'),
+@app.callback(Output('bar-selector', 'value'),
               [Input('histogram', 'selectedData')]
 )
 def update_bar_selector(value):
     holder = []
-    if( value is None or len(value) is 0):
+    if ( value is None or len(value) is 0):
         return holder
     for x in value['points']:
         holder.append(str(int(x['x'])))
     return holder
 
 
-@app.callback(Output('total_incidents', 'children'),
-              [Input('my_dropdown', 'value'), Input('my_slider', 'value')]
+@app.callback(Output('total-rides', 'children'),
+              [Input('my-dropdown', 'value'), Input('my-slider', 'value')]
 )
 def update_total_rides(value, slider_value):
-    return ('Total # of incidents: {:,d}'.format(len(totalList[getIndex(value)][slider_value - 1])))
+    return ('Total # of rides: {:,d}'.format(len(totalList[getIndex(value)][slider_value - 1])))
 
 
-@app.callback(Output('total_incidents_selection', 'children'),
-              [Input('my_dropdown', 'value'), Input('my_slider', 'value'),
-               Input('bar_selector', 'value')]
+@app.callback(Output('total-rides-selection', 'children'),
+              [Input('my-dropdown', 'value'), Input('my-slider', 'value'),
+               Input('bar-selector', 'value')]
 )
 def update_total_incidents_selection(value, slider_value, selection):
-    if(selection is None or len(selection) is 0):
+    if (selection is None or len(selection) is 0):
         return ''
     totalInSelection = 0
     for x in selection:
@@ -238,16 +238,16 @@ def update_total_incidents_selection(value, slider_value, selection):
                                          [slider_value - 1]
                                          [totalList[getIndex(value)]
                                          [slider_value - 1].index.hour == int(x)])
-    return ('Total incidents in selection: {:,d}'.format(totalInSelection))                                     
+    return ('Total rides in selection: {:,d}'.format(totalInSelection))                                     
 
 
-@app.callback(Output('date_value', 'children'),
-              [Input('my_dropdown', 'value'), Input('my_slider', 'value'),
-               Input('bar_selector', 'value')]
+@app.callback(Output('date-value', 'children'),
+              [Input('my-dropdown', 'value'), Input('my-slider', 'value'),
+               Input('bar-selector', 'value')]
 )
 def update_date(value, slider_value, selection):
     holder = []
-    if(value is None or selection is None or len(selection) is 24 or len(selection) is 0):
+    if (value is None or selection is None or len(selection) is 24 or len(selection) is 0):
         return (value, '', slider_value, ' - showing: All')
 
     for x in selection:
@@ -268,7 +268,7 @@ def update_date(value, slider_value, selection):
 
 
 @app.callback(Output('histogram', 'selectedData'),
-              [Input('my_dropdown', 'value')]
+              [Input('my-dropdown', 'value')]
 )
 def clear_selection(value):
     if (value is None or len(value) is 0):
@@ -276,7 +276,7 @@ def clear_selection(value):
 
 
 @app.callback(Output('popupAnnotation', 'children'),
-              [Input('bar_selector', 'value')]
+              [Input('bar-selector', 'value')]
 )
 def clear_selection_1(value):
     if (value is None or len(value) is 0):
@@ -309,8 +309,8 @@ def get_selection(value, slider_value, selection):
 
 
 @app.callback(Output('histogram', 'figure'),
-              [Input('my_dropdown', 'value'), Input('my_slider', 'value'),
-               Input('bar_selector', 'value')]
+              [Input('my-dropdown', 'value'), Input('my-slider', 'value'),
+               Input('bar-selector', 'value')]
 )
 def update_histogram(value, slider_value, selection):
     [xVal, yVal, xSelected, colorVal] = get_selection(value, slider_value, selection)
@@ -401,10 +401,10 @@ def get_lat_lon_color(selectedData, value, slider_value):
     return listStr
 
 
-@app.callback(Output('map_graph', 'figure'),
-              [Input('my_dropdown', 'value'), Input('my_slider', 'value'),
-              Input('bar_selector', 'value')],
-              [State('map_graph', 'relayoutData'),
+@app.callback(Output('map-graph', 'figure'),
+              [Input('my-dropdown', 'value'), Input('my-slider', 'value'),
+              Input('bar-selector', 'value')],
+              [State('map-graph', 'relayoutData'),
                State('mapControls', 'values')])
 def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
     zoom = 12.0
@@ -480,7 +480,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                     lat=latInitial, # 40.7272
                     lon=lonInitial # -73.991251
                 ),
-                #style='dark',
+                style='mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n',
                 bearing=bearing,
                 zoom=zoom
             ),
@@ -493,7 +493,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 'mapbox.center.lon': '-73.991251',
                                 'mapbox.center.lat': '40.7272',
                                 'mapbox.bearing': 0,
-                                # 'mapbox.style': 'dark'
+                                'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
                             }],
                             label='Raset Zoom',
                             method='relayout'
@@ -522,6 +522,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                     'mapbox.center.lon': '-73.974',
                                     'mapbox.center.lat': '40.781',
                                     'mapbox.bearing': 0,
+                                    'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
                                 }],
                             label='Manhattan',
                             method='relayout'
@@ -532,6 +533,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                     'mapbox.center.lon': '-73.898',
                                     'mapbox.center.lat': '40.857',
                                     'mapbox.bearing': 0,
+                                    'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
                                 }],
                             label='Bronx',
                             method='relayout'
@@ -542,6 +544,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                     'mapbox.center.lon': '-73.957',
                                     'mapbox.center.lat': '40.659',
                                     'mapbox.bearing': 0,
+                                    'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
                                 }],
                             label='Brooklyn',
                             method='relayout'
@@ -552,6 +555,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                     'mapbox.center.lon': '-74.165',
                                     'mapbox.center.lat': '40.585',
                                     'mapbox.bearing': 0,
+                                    'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
                                 }],
                             label='Staten Island',
                             method='relayout'
@@ -562,6 +566,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                     'mapbox.center.lon': '-73.827',
                                     'mapbox.center.lat': '40.716',
                                     'mapbox.bearing': 0,
+                                    'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
                                 }],
                             label='Queens',
                             method='relayout'
