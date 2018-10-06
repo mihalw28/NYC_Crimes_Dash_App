@@ -1,12 +1,10 @@
-# -*- coding: utf-8 -*-
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output, State, Event
 import plotly.plotly as py
 from plotly import graph_objs as go
-#from plotly.graph_objs import *
+from plotly.graph_objs import *
 from flask import Flask
 from flask_cors import CORS
 import pandas as pd
@@ -106,18 +104,15 @@ app.layout = html.Div([
                         {'label': '23:00', 'value': '23'}
                     ],
                     multi=True,
-                    placeholder="Select certain hours using\
-                                 the box-select/lasso tool\
-                                 or using the dropdown menu",
+                    placeholder="Select certain hours using \
+                                 the box-select/lasso tool or \
+                                 using the dropdown menu",
                     className="bars"
                 ),
                 dcc.Graph(id="histogram"),
                 html.P("", id="popupAnnotation", className="popupAnnotation"),
-            ],
-            className="graph twelve coluns"
-            ),
-        ], 
-        style={'margin': 'auto auto'}),
+            ], className="graph twelve coluns"),
+        ], style={'margin': 'auto auto'}),
         dcc.Slider(
             id="my-slider",
             min=1,
@@ -151,8 +146,7 @@ def getValue(value):
         'Oct': 31,
         'Nov': 30,
         'Dec': 31
-    }
-    [value]
+    }[value]
     return val
 
 def getIndex(value):
@@ -171,8 +165,7 @@ def getIndex(value):
         'Oct': 9,
         'Nov': 10,
         'Dec': 11
-    }
-    [value]
+    }[value]
     return val
 
 def getClickIndex(value):
@@ -213,7 +206,7 @@ def update_bar_selector(value):
 @app.callback(Output("total-rides", "children"),
               [Input("my-dropdown", "value"), Input('my-slider', 'value')])
 def update_total_rides(value, slider_value):
-    return ("Total # of rides: {}"
+    return ("Total # of rides: {:,d}"
             .format(len(totalList[getIndex(value)][slider_value-1])))
 
 
@@ -375,9 +368,9 @@ def update_histogram(value, slider_value, selection):
 
 def get_lat_lon_color(selectedData, value, slider_value):
     listStr = 'totalList[getIndex(value)][slider_value-1]'
-    if (selectedData is None or len(selectedData) is 0):
+    if(selectedData is None or len(selectedData) is 0):
         return listStr
-    elif (int(selectedData[len(selectedData)-1])-int(selectedData[0])+2 == len(selectedData)+1 and len(selectedData) > 2):
+    elif(int(selectedData[len(selectedData)-1])-int(selectedData[0])+2 == len(selectedData)+1 and len(selectedData) > 2):
         listStr += "[(totalList[getIndex(value)][slider_value-1].index.hour>"+str(int(selectedData[0]))+") & \
                     (totalList[getIndex(value)][slider_value-1].index.hour<" + str(int(selectedData[len(selectedData)-1]))+")]"
     else:
@@ -459,10 +452,10 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
             mapbox=dict(
                 accesstoken=mapbox_access_token,
                 center=dict(
-                    lat=40.7272,
-                    lon=-73.991251
+                    lat=latInitial, #40.7272,
+                    lon=lonInitial #-73.991251
                 ),
-                style='dark',
+                style='mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n',
                 bearing=bearing,
                 zoom=zoom
             ),
