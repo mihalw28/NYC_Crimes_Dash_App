@@ -26,7 +26,7 @@ mapbox_access_token = 'pk.eyJ1IjoibWloYWx3MjgiLCJhIjoiY2psejZqZThnMXRndDNxcDFpdW
 
 def initialize():
     df = pd.read_csv('../NYC_Crimes_Dash_App/crimes_app_data.csv')
-    df.drop('Unnamed: 0', 1, inplace=True)
+    #df.drop('Unnamed: 0', 1, inplace=True)
     df['Date/Time'] = pd.to_datetime(df['Date/Time'], format='%Y-%m-%d %H:%M:%S')
     df.index = df['Date/Time']
     df.drop('Date/Time', 1, inplace=True)
@@ -34,8 +34,8 @@ def initialize():
     totalList = []
     for month in df.groupby(df.index.month):
         dailyList = []
-        for day in month[1].groupby(month[1].index.day):
-            dailyList.append(day[1])
+        for weekday in month[1].groupby(month[1].index.weekday):
+            dailyList.append(weekday[1])
         totalList.append(dailyList)
     return np.array(totalList)
 
@@ -51,16 +51,7 @@ app.layout = html.Div([
                 options=[
                     {'label': 'January', 'value': 'Jan'},
                     {'label': 'February', 'value': 'Feb'},
-                    {'label': 'March', 'value': 'Mar'},
-                    {'label': 'April', 'value': 'Apr'},
-                    {'label': 'May', 'value': 'May'},
-                    {'label': 'June', 'value': 'Jun'},
-                    {'label': 'July', 'value': 'Jul'},
-                    {'label': 'August', 'value': 'Aug'},
-                    {'label': 'September', 'value': 'Sep'},
-                    {'label': 'October', 'value': 'Oct'},
-                    {'label': 'November', 'value': 'Nov'},
-                    {'label': 'December', 'value': 'Dec'}
+                    {'label': 'March', 'value': 'Mar'}
                 ],
                 value="Jan",
                 placeholder="Please choose a month",
@@ -115,9 +106,20 @@ app.layout = html.Div([
         ], style={'margin': 'auto auto'}),
         dcc.Slider(
             id="my-slider",
-            min=1,
+            min=0,
+            max=6,
+            marks={
+                0: {'label': 'Mondays'},
+                1: {'label': 'Tuesdays'},
+                2: {'label': 'Wednesdays'},
+                3: {'label': 'Thursdays'},
+                4: {'label': 'Fridays'},
+                5: {'label': 'Saturdays'},
+                6: {'label': 'Sundays'}
+            },
             step=1,
-            value=1
+            included=False,
+            value=0
         ),
         dcc.Checklist(
             id="mapControls",
@@ -128,24 +130,66 @@ app.layout = html.Div([
             labelClassName="mapControls",
             inputStyle={"z-index": "3"}
         ),
+        dcc.Checklist(
+            id='incidentTypeControls',
+            options=[
+                {'label': 'FELONY', 'value': 'fel'},
+                {'label': 'MISDEMEANOR', 'value': 'mis'},
+                {'label': 'VIOLATION', 'value': 'vio'}
+            ],
+            values=['fel', 'mis', 'vio'],
+            labelClassName='incidentTypeControls',
+            inputStyle={'z-index': '3'}
+        ),
+        dcc.Dropdown(
+            id='race-dropdown',
+            options=[
+                {'label': 'Black', 'value': 'Bl'},
+                {'label': 'White Hispanic', 'value': 'Whh'},
+                {'label': 'White', 'value': 'Wh'},
+                {'label': 'Asian/Pac. Isl.', 'value': 'As'},
+                {'label': 'Black Hispanic', 'value': 'Blh'},
+                {'label': 'Amer Ind.', 'value': 'Am'},
+                {'label': 'All', 'value': 'All'}
+            ],
+            value='All',
+            placeholder='Race',
+            className='races'
+        ),
+        dcc.Dropdown(
+            id='age-dropdown',
+            options=[
+                {'label': '<18', 'value': 'u18'},
+                {'label': '18-24', 'value': 'u24'},
+                {'label': '25-44', 'value': 'u44'},
+                {'label': '45-64', 'value': 'u64'},
+                {'label': '65+', 'value': 'a65'},
+                {'label': 'All', 'value': 'All'}
+            ],
+            value='All',
+            placeholder='Age',
+            className='ages'
+        ),
+        dcc.Dropdown(
+            id='sex-dropdown',
+            options=[
+                {'label': 'Female', 'value': 'f'},
+                {'label': 'Male', 'value': 'm'},
+                {'label': 'Both', 'value': 'b'}
+            ],
+            value='b',
+            placeholder='Sex',
+            className='sexes'
+        ),
     ], className="graphSlider ten columns offset-by-one"),
 ], style={"padding-top": "20px"})
 
 
 def getValue(value):
     val = {
-        'Jan': 31,
-        'Feb': 28,
-        'Mar': 31,
-        'Apr': 30,
-        'May': 31,
-        'Jun': 30,
-        'Jul': 31,
-        'Aug': 31,
-        'Sep': 30,
-        'Oct': 31,
-        'Nov': 30,
-        'Dec': 31
+        'Jan': 6,
+        'Feb': 6,
+        'Mar': 6
     }[value]
     return val
 
@@ -155,16 +199,19 @@ def getIndex(value):
     val = {
         'Jan': 0,
         'Feb': 1,
-        'Mar': 2,
-        'Apr': 3,
-        'May': 4,
-        'Jun': 5,
-        'Jul': 6,
-        'Aug': 7,
-        'Sep': 8,
-        'Oct': 9,
-        'Nov': 10,
-        'Dec': 11
+        'Mar': 2
+    }[value]
+    return val
+
+def getTickLabel(value):
+    val = {
+        0: 'Mondays',
+        1: 'Tuesdays',
+        2: 'Wednesdays',
+        3: 'Thursdays',
+        4: 'Fridays',
+        5: 'Saturdays',
+        6: 'Sundays'
     }[value]
     return val
 
@@ -174,22 +221,21 @@ def getClickIndex(value):
     return value['points'][0]['x']
 
 
-@app.callback(Output("my-slider", "marks"),
-              [Input("my-dropdown", "value")])
-def update_slider_ticks(value):
-    marks = {}
-    for i in range(1, getValue(value)+1, 1):
-        if (i is 1 or i is getValue(value)):
-            marks.update({i: '{} {}'.format(value, i)})
-        else:
-            marks.update({i: '{}'.format(i)})
-    return marks
+#@app.callback(Output("my-slider", "marks"),
+#              [Input("my-dropdown", "value")])
+#def update_slider_ticks(value):
+#    for i in range(0, getValue(value)+1):
+#        if (i is 0 or i is getValue(value)):
+#            marks.update({i: '{}'.format(marks[value])})
+#        else:
+#            marks.update({i: '{}'.format(i)})
+#    return marks
 
 
-@app.callback(Output("my-slider", "max"),
-              [Input("my-dropdown", "value")])
-def update_slider_max(value):
-    return getValue(value)
+#@app.callback(Output("my-slider", "max"),
+#              [Input("my-dropdown", "value")])
+#def update_slider_max(value):
+#    return getValue(value)
 
 
 @app.callback(Output("bar-selector", "value"),
@@ -206,8 +252,7 @@ def update_bar_selector(value):
 @app.callback(Output("total-rides", "children"),
               [Input("my-dropdown", "value"), Input('my-slider', 'value')])
 def update_total_rides(value, slider_value):
-    return ("Total # of rides: {:,d}"
-            .format(len(totalList[getIndex(value)][slider_value-1])))
+    return ("Total # of incidents: {:,d}".format(len(totalList[getIndex(value)][slider_value-1])))
 
 
 @app.callback(Output('total-rides-selection', 'children'),
@@ -223,7 +268,7 @@ def update_total_rides_selection(value, slider_value, selection):
                                          [slider_value-1]
                                          [totalList[getIndex(value)]
                                                 [slider_value-1].index.hour == int(x)])
-    return ('Total rides in selection: {:,d}'
+    return ('Total incidents in selection: {:,d}'
             .format(totalInSelction))                                     
 
 
@@ -233,15 +278,16 @@ def update_total_rides_selection(value, slider_value, selection):
 )
 def update_date(value, slider_value, selection):
     holder = []
+    
     if (value is None or selection is None or len(selection) is 24 or len(selection) is 0):
-        return (value, '', slider_value, ' - showing: All')
+        return (value, ' {}'.format(getTickLabel(slider_value)), ' - showing: All') #try to select labels not value
 
     for x in selection:
         holder.append(int(x))
     holder.sort()
 
     if(holder[len(holder)-1]-holder[0]+2 == len(holder)+1 and len(holder) > 2):
-        return (value, ' ', slider_value, ' - showing hour(s): ',
+        return (value, ' {}'.format(getTickLabel(slider_value)), ' - showing hour(s): ',
                 holder[0], '-', holder[len(holder)-1])
 
     x = ''
@@ -250,7 +296,7 @@ def update_date(value, slider_value, selection):
             x += str(h)
         else:
             x += str(h) + ', '
-    return (value, ' ', slider_value, ' - showing hours(s): ', x)
+    return (value, ' {}'.format(getTickLabel(slider_value)), ' - showing hours(s): ', x)
 
 
 @app.callback(Output('histogram', 'selectedData'),
@@ -263,7 +309,7 @@ def clear_selection(value):
 @app.callback(Output('popupAnnotation', 'children'),
               [Input('bar-selector', 'value')]
 )
-def clear_selection(value):
+def clear_selection1(value):
     if(value is None or len(value) is 0):
         return 'Select any of the bars to section data by time'
     else:
@@ -412,7 +458,8 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                 text=eval(listStr).index.hour,
                 marker = dict(
                     color=np.append(np.insert(eval(listStr).index.hour, 0, 0), 23),
-                    colorscale='BlueRed',
+                    colorscale='Viridis',
+                    reversescale=True,
                     opacity=0.5,
                     size=5,
                     colorbar=dict(
