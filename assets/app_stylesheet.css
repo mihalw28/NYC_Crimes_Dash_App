@@ -100,9 +100,12 @@ body {
 }
 
 .pie {
-    position: relative;
-    margin: 0;
+    position: absolute;
+    top: 600px;
+    left: 15px;
     width: 250px;
+    z-index: 2;
+    fill-opacity: 0.8
 }
 
 

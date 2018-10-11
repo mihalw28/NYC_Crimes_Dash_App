@@ -106,11 +106,11 @@ app.layout = html.Div([
                         histogram',
                     className="explanationParagraph twelve columns"),
                 dcc.Graph(id='map-graph'),
-            ]), #), #should be 'columns', but for now 'coluns'
-            html.Div([
-                html.Div([  
+            ]),
+            html.Div([  
                     dcc.Graph(id='pie_graph'),
-                ], className = 'pie bottom three columns'),
+                ], className = 'pie bottom three columns'), #), #should be 'columns', but for now 'coluns'
+            html.Div([
                 html.Div([
                     dcc.Dropdown(
                         id='bar-selector',
@@ -164,7 +164,7 @@ app.layout = html.Div([
                         included=False,
                         value=0,
                     className='mySlider'),
-                ], className = 'bottom nine columns'),
+                ], className = 'bottom twelve columns'),
             ], style={'margin': 'auto 0 auto'},
             className='row'),
             dcc.Checklist(
@@ -209,6 +209,43 @@ def getIndex(value):
         'Mar': 2
     }[value]
     return val
+
+
+'''def getRace(value):
+    if(value==None):
+        return 5
+    val = {
+        'Bl': 0,
+        'Whh': 1,
+        'Wh': 2,
+        'As': 3,
+        'Blh': 4,
+        'Am': 5
+        'All': 6
+    }'''
+
+
+'''def getAge(value):
+    if(value==None):
+        return 6
+    val = {
+        'u18': 0,
+        'u24': 1,
+        'u44': 2,
+        'u64': 3,
+        'a65': 4,
+        'All': 5
+    }'''    
+
+
+'''def getSex(value):
+    if(value==None):
+        return 2
+    val = {
+        'f': 0,
+        'm': 1,
+        'b': 2,
+    }'''
 
 
 def getTickLabel(value):
@@ -258,13 +295,16 @@ def update_bar_selector(value):
 
 
 @app.callback(Output("total-rides", "children"),
-              [Input("my-dropdown", "value"), Input('my-slider', 'value')])
+              [Input("my-dropdown", "value"), 
+               Input('my-slider', 'value')]
+)
 def update_total_rides(value, slider_value):
     return ("Total # of incidents: {:,d}".format(len(totalList[getIndex(value)][slider_value-1])))
 
 
 @app.callback(Output('total-rides-selection', 'children'),
-              [Input('my-dropdown', 'value'), Input('my-slider', 'value'),
+              [Input('my-dropdown', 'value'), 
+               Input('my-slider', 'value'),
                Input('bar-selector', 'value')]
 )
 def update_total_rides_selection(value, slider_value, selection):
@@ -321,6 +361,11 @@ def make_pie(value, slider_value):
         'STATEN ISLAND': '#d14af2',
         'QUEENS': '#de5959'
     }
+
+    #next expanded boros dict
+    # boros_dict = totalList[getIndex(value)][slider_value].BORO_NM[(totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(value)) 
+    #                        & (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(value))
+    #                        & (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(value))].value_counts().to_dict()
     
     boros_dict = totalList[getIndex(value)][slider_value].BORO_NM.value_counts().to_dict()
     labels = list(boros_dict.keys())
@@ -348,17 +393,20 @@ def make_pie(value, slider_value):
                         width=1.2,
                     )
                 ),
+                opacity=0.8
             ),
         ], 
         layout=go.Layout(
-            title='The number of incidents in {}'.format(getTickLabel(slider_value)),
+            title='Incidents in boroughs on {}'.format(getTickLabel(slider_value)),
+            titlefont=dict(
+                size=13,
+                color='rgb(255, 255, 255)'
+            ),
             showlegend=False,
             height=285,
-            margin=dict(l=50, r=50, t=50, b=50),
-            font=dict(
-                color='rgb(255, 255, 255)',
-            ),
-            paper_bgcolor='#323130',
+            margin=dict(l=15, r=50, t=50, b=50),
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
         )
     )
     return figure
@@ -414,7 +462,7 @@ def update_histogram(value, slider_value, selection):
     [xVal, yVal, xSelected, colorVal] = get_selection(value, slider_value, selection)
 
     layout = go.Layout(
-        bargap=0.01,
+        bargap=0,
         bargroupgap=0,
         barmode='group',
         margin=dict(l=0, r=0, t=0, b=0),
@@ -425,6 +473,7 @@ def update_histogram(value, slider_value, selection):
         dragmode='select',
         xaxis=dict(
             range=[-0.5, 23.5],
+            showticklabels=True,
             showgrid=False,
             nticks=25,
             fixedrange=True,
@@ -631,7 +680,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                         color="#fae13d"
                     ),
                     x=0.01,
-                    y=0.25
+                    y=0.57, 
                 ),
                 dict(
                     buttons=([
@@ -659,7 +708,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                         color="#3ef989"
                     ),
                     x=0.01,
-                    y=0.2
+                    y=0.52
                 ),
                 dict(
                     buttons=([
@@ -687,7 +736,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                         color="#42c9fa"
                     ),
                     x=0.01,
-                    y=0.15
+                    y=0.47
                 ),
                 dict(
                     buttons=([
@@ -715,7 +764,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                         color="#d14af2"
                     ),
                     x=0.01,
-                    y=0.1
+                    y=0.42
                 ),
                 dict(
                     buttons=([
@@ -743,7 +792,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                         color="#de5959"
                     ),
                     x=0.01,
-                    y=0.05
+                    y=0.37
                 ),
             ]
         )
