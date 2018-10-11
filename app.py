@@ -53,9 +53,49 @@ app.layout = html.Div([
                     {'label': 'February', 'value': 'Feb'},
                     {'label': 'March', 'value': 'Mar'}
                 ],
-                value="Jan",
-                placeholder="Please choose a month",
-                className="month-picker"
+                #value="Jan",
+                placeholder="Month",
+                className="two columns"
+            ),
+            dcc.Dropdown(
+                id='race-dropdown',
+                options=[
+                    {'label': 'Black', 'value': 'Bl'},
+                    {'label': 'White Hispanic', 'value': 'Whh'},
+                    {'label': 'White', 'value': 'Wh'},
+                    {'label': 'Asian/Pac. Isl.', 'value': 'As'},
+                    {'label': 'Black Hispanic', 'value': 'Blh'},
+                    {'label': 'Amer Ind.', 'value': 'Am'},
+                    {'label': 'All', 'value': 'All'}
+                ],
+                #value='All',
+                placeholder='Race',
+                className='two columns'
+            ),
+            dcc.Dropdown(
+                id='age-dropdown',
+                options=[
+                    {'label': '<18', 'value': 'u18'},
+                    {'label': '18-24', 'value': 'u24'},
+                    {'label': '25-44', 'value': 'u44'},
+                    {'label': '45-64', 'value': 'u64'},
+                    {'label': '65+', 'value': 'a65'},
+                    {'label': 'All', 'value': 'All'}
+                ],
+                #value='All',
+                placeholder='Age',
+                className='two columns'
+            ),
+            dcc.Dropdown(
+                id='sex-dropdown',
+                options=[
+                    {'label': 'Female', 'value': 'f'},
+                    {'label': 'Male', 'value': 'm'},
+                    {'label': 'Both', 'value': 'b'}
+                ],
+                #value='b',
+                placeholder='Sex',
+                className='two columns'
             ),
             html.Div([
                 html.Div([
@@ -64,125 +104,92 @@ app.layout = html.Div([
                 html.P('Select different days using the dropdown and the slider\
                         below or by selecting different time frames on the\
                         histogram',
-                        className="explanationParagraph twelve columns"),
+                    className="explanationParagraph twelve columns"),
                 dcc.Graph(id='map-graph'),
-                dcc.Dropdown(
-                    id='bar-selector',
-                    options=[
-                        {'label': '0:00', 'value': '0'},
-                        {'label': '1:00', 'value': '1'},
-                        {'label': '2:00', 'value': '2'},
-                        {'label': '3:00', 'value': '3'},
-                        {'label': '4:00', 'value': '4'},
-                        {'label': '5:00', 'value': '5'},
-                        {'label': '6:00', 'value': '6'},
-                        {'label': '7:00', 'value': '7'},
-                        {'label': '8:00', 'value': '8'},
-                        {'label': '9:00', 'value': '9'},
-                        {'label': '10:00', 'value': '10'},
-                        {'label': '11:00', 'value': '11'},
-                        {'label': '12:00', 'value': '12'},
-                        {'label': '13:00', 'value': '13'},
-                        {'label': '14:00', 'value': '14'},
-                        {'label': '15:00', 'value': '15'},
-                        {'label': '16:00', 'value': '16'},
-                        {'label': '17:00', 'value': '17'},
-                        {'label': '18:00', 'value': '18'},
-                        {'label': '19:00', 'value': '19'},
-                        {'label': '20:00', 'value': '20'},
-                        {'label': '21:00', 'value': '21'},
-                        {'label': '22:00', 'value': '22'},
-                        {'label': '23:00', 'value': '23'}
-                    ],
-                    multi=True,
-                    placeholder="Select certain hours using \
-                                 the box-select/lasso tool or \
-                                 using the dropdown menu",
-                    className="bars"
-                ),
-                dcc.Graph(id="histogram"),
-                html.P("", id="popupAnnotation", className="popupAnnotation"),
-            ], className="graph twelve coluns"),
-        ], style={'margin': 'auto auto'}),
-        dcc.Slider(
-            id="my-slider",
-            min=0,
-            max=6,
-            marks={
-                0: {'label': 'Mondays'},
-                1: {'label': 'Tuesdays'},
-                2: {'label': 'Wednesdays'},
-                3: {'label': 'Thursdays'},
-                4: {'label': 'Fridays'},
-                5: {'label': 'Saturdays'},
-                6: {'label': 'Sundays'}
-            },
-            step=1,
-            included=False,
-            value=0
-        ),
-        dcc.Checklist(
-            id="mapControls",
-            options=[
-                {'label': 'Lock Camera', 'value': 'lock'}
-            ],
-            values=[''],
-            labelClassName="mapControls",
-            inputStyle={"z-index": "3"}
-        ),
-        dcc.Checklist(
-            id='incidentTypeControls',
-            options=[
-                {'label': 'FELONY', 'value': 'fel'},
-                {'label': 'MISDEMEANOR', 'value': 'mis'},
-                {'label': 'VIOLATION', 'value': 'vio'}
-            ],
-            values=['fel', 'mis', 'vio'],
-            labelClassName='incidentTypeControls',
-            inputStyle={'z-index': '3'}
-        ),
-        dcc.Dropdown(
-            id='race-dropdown',
-            options=[
-                {'label': 'Black', 'value': 'Bl'},
-                {'label': 'White Hispanic', 'value': 'Whh'},
-                {'label': 'White', 'value': 'Wh'},
-                {'label': 'Asian/Pac. Isl.', 'value': 'As'},
-                {'label': 'Black Hispanic', 'value': 'Blh'},
-                {'label': 'Amer Ind.', 'value': 'Am'},
-                {'label': 'All', 'value': 'All'}
-            ],
-            value='All',
-            placeholder='Race',
-            className='races'
-        ),
-        dcc.Dropdown(
-            id='age-dropdown',
-            options=[
-                {'label': '<18', 'value': 'u18'},
-                {'label': '18-24', 'value': 'u24'},
-                {'label': '25-44', 'value': 'u44'},
-                {'label': '45-64', 'value': 'u64'},
-                {'label': '65+', 'value': 'a65'},
-                {'label': 'All', 'value': 'All'}
-            ],
-            value='All',
-            placeholder='Age',
-            className='ages'
-        ),
-        dcc.Dropdown(
-            id='sex-dropdown',
-            options=[
-                {'label': 'Female', 'value': 'f'},
-                {'label': 'Male', 'value': 'm'},
-                {'label': 'Both', 'value': 'b'}
-            ],
-            value='b',
-            placeholder='Sex',
-            className='sexes'
-        ),
-    ], className="graphSlider ten columns offset-by-one"),
-], style={"padding-top": "20px"})
+            ]), #), #should be 'columns', but for now 'coluns'
+            html.Div([
+                html.Div([  
+                    dcc.Graph(id='pie_graph'),
+                ], className = 'pie bottom three columns'),
+                html.Div([
+                    dcc.Dropdown(
+                        id='bar-selector',
+                        options=[
+                            {'label': '0:00', 'value': '0'},
+                            {'label': '1:00', 'value': '1'},
+                            {'label': '2:00', 'value': '2'},
+                            {'label': '3:00', 'value': '3'},
+                            {'label': '4:00', 'value': '4'},
+                            {'label': '5:00', 'value': '5'},
+                            {'label': '6:00', 'value': '6'},
+                            {'label': '7:00', 'value': '7'},
+                            {'label': '8:00', 'value': '8'},
+                            {'label': '9:00', 'value': '9'},
+                            {'label': '10:00', 'value': '10'},
+                            {'label': '11:00', 'value': '11'},
+                            {'label': '12:00', 'value': '12'},
+                            {'label': '13:00', 'value': '13'},
+                            {'label': '14:00', 'value': '14'},
+                            {'label': '15:00', 'value': '15'},
+                            {'label': '16:00', 'value': '16'},
+                            {'label': '17:00', 'value': '17'},
+                            {'label': '18:00', 'value': '18'},
+                            {'label': '19:00', 'value': '19'},
+                            {'label': '20:00', 'value': '20'},
+                            {'label': '21:00', 'value': '21'},
+                            {'label': '22:00', 'value': '22'},
+                            {'label': '23:00', 'value': '23'}
+                        ],
+                        multi=True,
+                        placeholder="Select certain hours using \
+                                    the box-select/lasso tool or \
+                                    using the dropdown menu",
+                    ),
+                    dcc.Graph(id="histogram", className='histogramGraph'),
+                    html.P("", id="popupAnnotation", className="popupAnnotation"),
+                    dcc.Slider(
+                        id="my-slider",
+                        min=0,
+                        max=6,
+                        marks={
+                            0: {'label': 'Mondays'},
+                            1: {'label': 'Tuesdays'},
+                            2: {'label': 'Wednesdays'},
+                            3: {'label': 'Thursdays'},
+                            4: {'label': 'Fridays'},
+                            5: {'label': 'Saturdays'},
+                            6: {'label': 'Sundays'}
+                        },
+                        step=1,
+                        included=False,
+                        value=0,
+                    className='mySlider'),
+                ], className = 'bottom nine columns'),
+            ], style={'margin': 'auto 0 auto'},
+            className='row'),
+            dcc.Checklist(
+                id="mapControls",
+                options=[
+                    {'label': 'Lock Camera', 'value': 'lock'}
+                ],
+                values=[''],
+                labelClassName="mapControls",
+                inputStyle={"z-index": "1"}
+            ),
+            dcc.Checklist(
+                id='incidentTypeControls',
+                options=[
+                    {'label': 'FELONY', 'value': 'fel'},
+                    {'label': 'MISDEMEANOR', 'value': 'mis'},
+                    {'label': 'VIOLATION', 'value': 'vio'}
+                ],
+                values=['fel', 'mis', 'vio'],
+                labelClassName='incidentTypeControls',
+                inputStyle={'z-index': '1'}
+            ),
+        ], className="graphSlider ten columns offset-by-one"),
+    ])
+], style={"backgroundColor": "rgb(0, 0, 0)"})
 
 
 def getValue(value):
@@ -202,6 +209,7 @@ def getIndex(value):
         'Mar': 2
     }[value]
     return val
+
 
 def getTickLabel(value):
     val = {
@@ -280,7 +288,7 @@ def update_date(value, slider_value, selection):
     holder = []
     
     if (value is None or selection is None or len(selection) is 24 or len(selection) is 0):
-        return (value, ' {}'.format(getTickLabel(slider_value)), ' - showing: All') #try to select labels not value
+        return (value, ' {}'.format(getTickLabel(slider_value)), ' - showing: All')
 
     for x in selection:
         holder.append(int(x))
@@ -297,6 +305,63 @@ def update_date(value, slider_value, selection):
         else:
             x += str(h) + ', '
     return (value, ' {}'.format(getTickLabel(slider_value)), ' - showing hours(s): ', x)
+
+
+# pie chart
+@app.callback(Output('pie_graph', 'figure'),
+                     [Input('my-dropdown', 'value'), 
+                      Input('my-slider', 'value')]
+)
+def make_pie(value, slider_value):
+
+    boro_color = {
+        'MANHATTAN': '#fae13d',
+        'BRONX': '#3ef989',
+        'BROOKLYN': '#42c9fa',
+        'STATEN ISLAND': '#d14af2',
+        'QUEENS': '#de5959'
+    }
+    
+    boros_dict = totalList[getIndex(value)][slider_value].BORO_NM.value_counts().to_dict()
+    labels = list(boros_dict.keys())
+    values = list(boros_dict.values())
+    
+    def getBorosColors(value):
+        colors = []
+        for label in labels:
+            colors.append(boro_color.get(label))
+        return colors
+
+    figure=go.Figure(
+        data=[
+            go.Pie(
+                labels = labels,
+                values = values,
+                
+                hoverinfo='label',
+                hole=0.4,
+                direction='clockwise',
+                marker=dict(
+                    colors = getBorosColors(labels),
+                    line=dict(
+                        color='rgb(0, 0, 0)',
+                        width=1.2,
+                    )
+                ),
+            ),
+        ], 
+        layout=go.Layout(
+            title='The number of incidents in {}'.format(getTickLabel(slider_value)),
+            showlegend=False,
+            height=285,
+            margin=dict(l=50, r=50, t=50, b=50),
+            font=dict(
+                color='rgb(255, 255, 255)',
+            ),
+            paper_bgcolor='#323130',
+        )
+    )
+    return figure
 
 
 @app.callback(Output('histogram', 'selectedData'),
@@ -331,7 +396,7 @@ def get_selection(value, slider_value, selection):
             xSelected.append(int(x))
     for i in range(0, 24, 1):
         if i in xSelected and len(xSelected) < 24:
-            colorVal[i] = ('#FFFFFF')
+            colorVal[i] = ('#ffffff')
         xVal.append(i)
         yVal.append(len(totalList[getIndex(value)][slider_value-1]
                     [totalList[getIndex(value)][slider_value-1].index.hour == i]))
@@ -352,7 +417,7 @@ def update_histogram(value, slider_value, selection):
         bargap=0.01,
         bargroupgap=0,
         barmode='group',
-        margin=dict(l=10, r=0, t=0, b=30),
+        margin=dict(l=0, r=0, t=0, b=0),
         showlegend=False,
         plot_bgcolor='#323130',
         paper_bgcolor='rgb(66, 134, 244, 0)',
@@ -366,7 +431,7 @@ def update_histogram(value, slider_value, selection):
             ticksuffix=':00'
         ),
         yaxis=dict(
-            range=[0, max(yVal)+max(yVal)/4],
+            range=[0, max(yVal)+max(yVal)/2],
             showticklabels=False,
             showgrid=False,
             fixedrange=True,
@@ -392,7 +457,11 @@ def update_histogram(value, slider_value, selection):
                     x=xVal,
                     y=yVal,
                     marker=dict(
-                        color=colorVal
+                        color=colorVal,
+                        line=dict(
+                            color='rgb(0, 0, 0)',
+                            width=1.2
+                        )
                     ),
                     hoverinfo="x"
                 ),
@@ -403,7 +472,7 @@ def update_histogram(value, slider_value, selection):
                     hoverinfo="none",
                     mode='markers',
                     marker=dict(
-                        color='rgb(66, 134, 244, 0)',
+                        color='rgb(66, 134, 244)',
                         symbol="square",
                         size=40
                     ),
@@ -484,10 +553,10 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                 mode='markers',
                 hoverinfo='text',
                 text=['Manhattan', 'Bronx', 'Brooklyn', 'Staten Island', 'Queens'],
-                # opacity=0.5,
+                opacity=0.1,
                 marker=dict(
                     size=6,
-                    color='#ffa0a0'
+                    color='#ffa0a0',
                 ),
             ),
         ],
@@ -499,8 +568,8 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
             mapbox=dict(
                 accesstoken=mapbox_access_token,
                 center=dict(
-                    lat=latInitial, #40.7272,
-                    lon=lonInitial #-73.991251
+                    lat=latInitial,
+                    lon=lonInitial
                 ),
                 style='mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n',
                 bearing=bearing,
@@ -548,7 +617,24 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 }],
                             label='Manhattan',
                             method='relayout'
-                        ),
+                        ),  
+                    ]),
+                    #direction="down",
+                    pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
+                    showactive=False,
+                    bgcolor="rgb(50, 49, 48, 0)",
+                    bordercolor='#fae13d',
+                    type='buttons',
+                    yanchor='bottom',
+                    xanchor='left',
+                    font=dict(
+                        color="#fae13d"
+                    ),
+                    x=0.01,
+                    y=0.25
+                ),
+                dict(
+                    buttons=([
                         dict(
                             args=[{
                                 'mapbox.zoom': 11.5,
@@ -559,7 +645,24 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 }],
                             label='Bronx',
                             method='relayout'
-                        ),
+                        ),  
+                    ]),
+                    #direction="down",
+                    pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
+                    showactive=False,
+                    bgcolor="rgb(50, 49, 48, 0)",
+                    bordercolor='#3ef989',
+                    type='buttons',
+                    yanchor='bottom',
+                    xanchor='left',
+                    font=dict(
+                        color="#3ef989"
+                    ),
+                    x=0.01,
+                    y=0.2
+                ),
+                dict(
+                    buttons=([
                         dict(
                             args=[{
                                 'mapbox.zoom': 11.5,
@@ -570,7 +673,24 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 }],
                             label='Brooklyn',
                             method='relayout'
-                        ),
+                        ),  
+                    ]),
+                    #direction="down",
+                    pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
+                    showactive=False,
+                    bgcolor="rgb(50, 49, 48, 0)",
+                    bordercolor='#42c9fa',
+                    type='buttons',
+                    yanchor='bottom',
+                    xanchor='left',
+                    font=dict(
+                        color="#42c9fa"
+                    ),
+                    x=0.01,
+                    y=0.15
+                ),
+                dict(
+                    buttons=([
                         dict(
                             args=[{
                                 'mapbox.zoom': 11.5,
@@ -581,7 +701,24 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 }],
                             label='Staten Island',
                             method='relayout'
-                        ),
+                        ),  
+                    ]),
+                    #direction="down",
+                    pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
+                    showactive=False,
+                    bgcolor="rgb(50, 49, 48, 0)",
+                    bordercolor='#d14af2',
+                    type='buttons',
+                    yanchor='bottom',
+                    xanchor='left',
+                    font=dict(
+                        color="#d14af2"
+                    ),
+                    x=0.01,
+                    y=0.1
+                ),
+                dict(
+                    buttons=([
                         dict(
                             args=[{
                                 'mapbox.zoom': 11.5,
@@ -592,21 +729,22 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 }],
                             label='Queens',
                             method='relayout'
-                        )
+                        ),  
                     ]),
-                    direction="down",
+                    #direction="down",
                     pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
                     showactive=False,
                     bgcolor="rgb(50, 49, 48, 0)",
+                    bordercolor='#de5959',
                     type='buttons',
                     yanchor='bottom',
                     xanchor='left',
                     font=dict(
-                        color="#FFFFFF"
+                        color="#de5959"
                     ),
-                    x=0,
+                    x=0.01,
                     y=0.05
-                )
+                ),
             ]
         )
     )

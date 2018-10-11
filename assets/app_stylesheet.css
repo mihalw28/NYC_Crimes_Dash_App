@@ -1,13 +1,13 @@
 .graphSlider .rc-slider{
-    margin-top: 5px;
+    margin-top: 0px;
     position: relative;
     bottom: 20px;
     height: 14px;
-    padding: 5px 0;
+    padding: 0;
     width: 100%;
     border-radius: 6px;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    -webkit-tap-highlight-color: rgba(114, 16, 16, 0);
 }
 
 .graphSlider .rc-slider-dot-active{
@@ -34,8 +34,8 @@
     display: block;
     z-index: 1;
     position: relative;
-    top: 110px;
-    left: 20px;
+    top: 150px;
+    left: 17px;
     color: white;
     cursor: default;
     margin-bottom: 0px;
@@ -45,8 +45,8 @@
     display: inline-block;
     margin-bottom: 0;
     position: relative;
-    top: 108px;
-    left: 19px;
+    top: 155px;
+    left: 17px;
     z-index: 1;
     right: 133px;
     color: white;
@@ -56,11 +56,23 @@
     position: relative;
     display: block;
     top: 785px;
-    left: 20px;
-    color: white;
+    left: 17px;
+    color: rgb(255, 255, 255);
     cursor: default;
     z-index: 1;
-    margin-bottom: 0px;
+    margin-bottom: 35px;
+}
+
+.graphSlider .mySlider{
+    position: relative;
+    top: 30px;
+    z-index: 1;
+}
+
+.graphSlider .histogramGraph{
+    position: relative;
+    top: 0;
+    margin: 0;
 }
 
 .graphSlider .graph .js-plotly-plot .cursor-pointer{
@@ -71,7 +83,7 @@
   overflow-x: hidden;
   overflow-y: hidden;
   position: relative;
- /* bottom: 100px; */
+  /*bottom: 100px;*/
 }
 
 body {
@@ -81,33 +93,40 @@ body {
 .mapControls{
     display: inline;
     position: absolute;
-    top: 140px;
+    top: 170px;
     left: 45%;
     z-index: 1;
     color: white;
 }
 
+.pie {
+    position: relative;
+    margin: 0;
+    width: 250px;
+}
+
+
 .incidentTypeControls{
-    display: inline-block;
+    display: block;
     position: absolute;
-    top: 180px;
-    left: 10%;
-    z-index: 1;
+    top: 22%;
+    left: 9.5%;
+    z-index: 2;
     color: white;
 }
 
 
 
 .graphSlider h2{
-    top: 30px;
+    top: 20px;
     padding-left: 7px;
     position: absolute;
 }
 
 .graphSlider .explanationParagraph{
     margin: auto auto;
-    top: 75px;
-    padding-left: 11px;
+    top: 65px;
+    padding-left: 7px;
     position: absolute;
 }
 
@@ -128,8 +147,8 @@ body {
 }
 
 .Select{
-    padding-left: 10px;
-    /*padding-right: 9px;*/
+    padding-left: 0px;
+    padding-right: 0px;
     z-index: 2;
 }
 
@@ -139,4 +158,8 @@ body {
 
 .month-picker .Select-clear{
   visibility: hidden;
+}
+
+.Select .two-columns{
+    padding-left: 15px;
 }
