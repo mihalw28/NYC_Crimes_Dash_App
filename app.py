@@ -54,7 +54,7 @@ app.layout = html.Div([
                     {'label': 'March', 'value': 'Mar'}
                 ],
                 #value="Jan",
-                placeholder="Month",
+                placeholder="Month:",
                 className="two columns"
             ),
             dcc.Dropdown(
@@ -66,10 +66,10 @@ app.layout = html.Div([
                     {'label': 'Asian/Pac. Isl.', 'value': 'As'},
                     {'label': 'Black Hispanic', 'value': 'Blh'},
                     {'label': 'Amer Ind.', 'value': 'Am'},
-                    {'label': 'All', 'value': 'All'}
+                    {'label': 'All', 'value': 'all'}
                 ],
                 #value='All',
-                placeholder='Race',
+                placeholder='Suspector race:',
                 className='two columns'
             ),
             dcc.Dropdown(
@@ -80,10 +80,10 @@ app.layout = html.Div([
                     {'label': '25-44', 'value': 'u44'},
                     {'label': '45-64', 'value': 'u64'},
                     {'label': '65+', 'value': 'a65'},
-                    {'label': 'All', 'value': 'All'}
+                    {'label': "All", 'value': 'all'}
                 ],
                 #value='All',
-                placeholder='Age',
+                placeholder='Suspector age:',
                 className='two columns'
             ),
             dcc.Dropdown(
@@ -91,10 +91,10 @@ app.layout = html.Div([
                 options=[
                     {'label': 'Female', 'value': 'f'},
                     {'label': 'Male', 'value': 'm'},
-                    {'label': 'Both', 'value': 'b'}
+                    {'label': 'Both', 'value': 'both'}
                 ],
                 #value='b',
-                placeholder='Sex',
+                placeholder='Suspector sex:',
                 className='two columns'
             ),
             html.Div([
@@ -211,41 +211,59 @@ def getIndex(value):
     return val
 
 
-'''def getRace(value):
+def all_races(arg1, arg2):
+    x = totalList[getIndex(arg1)][arg2].SUSP_RACE
+    return x
+
+
+def all_ages(arg1, arg2):
+    x = totalList[getIndex(arg1)][arg2].SUSP_AGE_GROUP
+    return x
+
+
+def all_sexes(arg1, arg2):
+    x = totalList[getIndex(arg1)][arg2].SUSP_SEX
+    return x
+
+
+def getRace(value, *args):
     if(value==None):
-        return 5
+        return all_races(*args)
     val = {
-        'Bl': 0,
-        'Whh': 1,
-        'Wh': 2,
-        'As': 3,
-        'Blh': 4,
-        'Am': 5
-        'All': 6
-    }'''
+        'Bl': 'BLACK',
+        'Whh': 'WHITE HISPANIC',
+        'Wh': 'WHITE',
+        'As': 'ASIAN/PAC.ISL',
+        'Blh': 'BLACK HISPANIC',
+        'Am': 'AMER IND',
+        'all': all_races(*args)
+    }[value]
+    return val
 
 
-'''def getAge(value):
+def getAge(value, *args):
     if(value==None):
-        return 6
+        return all_ages(*args)
     val = {
-        'u18': 0,
-        'u24': 1,
-        'u44': 2,
-        'u64': 3,
-        'a65': 4,
-        'All': 5
-    }'''    
+        'u18': '<18',
+        'u24': '18-24',
+        'u44': '25-44',
+        'u64': '45-64',
+        'a65': '65+', 
+        'all': all_ages(*args)
+    }[value]
+    return val
 
 
-'''def getSex(value):
+def getSex(value, *args):
     if(value==None):
-        return 2
+        return 'M'
     val = {
-        'f': 0,
-        'm': 1,
-        'b': 2,
-    }'''
+        'f': 'F',
+        'm': 'M', 
+        'both': all_sexes(*args)
+    }[value]
+    return val
 
 
 def getTickLabel(value):
@@ -260,27 +278,28 @@ def getTickLabel(value):
     }[value]
     return val
 
+
 def getClickIndex(value):
     if (value==None):
         return 0
     return value['points'][0]['x']
 
 
-#@app.callback(Output("my-slider", "marks"),
-#              [Input("my-dropdown", "value")])
-#def update_slider_ticks(value):
-#    for i in range(0, getValue(value)+1):
-#        if (i is 0 or i is getValue(value)):
-#            marks.update({i: '{}'.format(marks[value])})
-#        else:
-#            marks.update({i: '{}'.format(i)})
-#    return marks
+'''@app.callback(Output("my-slider", "marks"),
+              [Input("my-dropdown", "value")])
+def update_slider_ticks(value):
+    for i in range(0, getValue(value)+1):
+        if (i is 0 or i is getValue(value)):
+            marks.update({i: '{}'.format(marks[value])})
+        else:
+            marks.update({i: '{}'.format(i)})
+    return marks
 
 
-#@app.callback(Output("my-slider", "max"),
-#              [Input("my-dropdown", "value")])
-#def update_slider_max(value):
-#    return getValue(value)
+@app.callback(Output("my-slider", "max"),
+              [Input("my-dropdown", "value")])
+def update_slider_max(value):
+    return getValue(value)'''
 
 
 @app.callback(Output("bar-selector", "value"),
@@ -299,7 +318,7 @@ def update_bar_selector(value):
                Input('my-slider', 'value')]
 )
 def update_total_rides(value, slider_value):
-    return ("Total # of incidents: {:,d}".format(len(totalList[getIndex(value)][slider_value-1])))
+    return ("Total # of incidents: {:,d}".format(len(totalList[getIndex(value)][slider_value])))
 
 
 @app.callback(Output('total-rides-selection', 'children'),
@@ -313,9 +332,9 @@ def update_total_rides_selection(value, slider_value, selection):
     totalInSelction = 0
     for x in selection:
         totalInSelction += len(totalList[getIndex(value)]
-                                         [slider_value-1]
+                                         [slider_value]
                                          [totalList[getIndex(value)]
-                                                [slider_value-1].index.hour == int(x)])
+                                                [slider_value].index.hour == int(x)])
     return ('Total incidents in selection: {:,d}'
             .format(totalInSelction))                                     
 
@@ -350,9 +369,12 @@ def update_date(value, slider_value, selection):
 # pie chart
 @app.callback(Output('pie_graph', 'figure'),
                      [Input('my-dropdown', 'value'), 
-                      Input('my-slider', 'value')]
+                      Input('my-slider', 'value'),
+                      Input('race-dropdown', 'value'),
+                      Input('age-dropdown', 'value'),
+                      Input('sex-dropdown', 'value')]
 )
-def make_pie(value, slider_value):
+def make_pie(value, slider_value, race_value, age_value, sex_value):
 
     boro_color = {
         'MANHATTAN': '#fae13d',
@@ -361,13 +383,12 @@ def make_pie(value, slider_value):
         'STATEN ISLAND': '#d14af2',
         'QUEENS': '#de5959'
     }
-
-    #next expanded boros dict
-    # boros_dict = totalList[getIndex(value)][slider_value].BORO_NM[(totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(value)) 
-    #                        & (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(value))
-    #                        & (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(value))].value_counts().to_dict()
     
-    boros_dict = totalList[getIndex(value)][slider_value].BORO_NM.value_counts().to_dict()
+    boros_dict = totalList[getIndex(value)][slider_value].BORO_NM[(totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(race_value, value, slider_value))
+                                                                 & (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(age_value, value, slider_value))
+                                                                 & (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(sex_value, value, slider_value))].value_counts().to_dict()
+
+    
     labels = list(boros_dict.keys())
     values = list(boros_dict.values())
     
@@ -382,7 +403,6 @@ def make_pie(value, slider_value):
             go.Pie(
                 labels = labels,
                 values = values,
-                
                 hoverinfo='label',
                 hole=0.4,
                 direction='clockwise',
@@ -420,8 +440,7 @@ def clear_selection(value):
 
 
 @app.callback(Output('popupAnnotation', 'children'),
-              [Input('bar-selector', 'value')]
-)
+              [Input('bar-selector', 'value')])
 def clear_selection1(value):
     if(value is None or len(value) is 0):
         return 'Select any of the bars to section data by time'
@@ -446,8 +465,8 @@ def get_selection(value, slider_value, selection):
         if i in xSelected and len(xSelected) < 24:
             colorVal[i] = ('#ffffff')
         xVal.append(i)
-        yVal.append(len(totalList[getIndex(value)][slider_value-1]
-                    [totalList[getIndex(value)][slider_value-1].index.hour == i]))
+        yVal.append(len(totalList[getIndex(value)][slider_value]
+                    [totalList[getIndex(value)][slider_value].index.hour == i]))
 
     return [np.array(xVal), np.array(yVal), np.array(xSelected), np.array(colorVal)]
 
