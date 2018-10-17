@@ -53,7 +53,6 @@ app.layout = html.Div([
                     {'label': 'February', 'value': 'Feb'},
                     {'label': 'March', 'value': 'Mar'}
                 ],
-                #value="Jan",
                 placeholder="Month:",
                 className="two columns"
             ),
@@ -66,9 +65,7 @@ app.layout = html.Div([
                     {'label': 'Asian/Pac. Isl.', 'value': 'As'},
                     {'label': 'Black Hispanic', 'value': 'Blh'},
                     {'label': 'Amer Ind.', 'value': 'Am'},
-                    {'label': 'All', 'value': 'all'}
                 ],
-                #value='All',
                 placeholder='Suspector race:',
                 className='two columns'
             ),
@@ -80,7 +77,6 @@ app.layout = html.Div([
                     {'label': '25-44', 'value': 'u44'},
                     {'label': '45-64', 'value': 'u64'},
                     {'label': '65+', 'value': 'a65'},
-                    {'label': "All", 'value': 'all'}
                 ],
                 #value='All',
                 placeholder='Suspector age:',
@@ -91,9 +87,7 @@ app.layout = html.Div([
                 options=[
                     {'label': 'Female', 'value': 'f'},
                     {'label': 'Male', 'value': 'm'},
-                    {'label': 'Both', 'value': 'both'}
                 ],
-                #value='b',
                 placeholder='Suspector sex:',
                 className='two columns'
             ),
@@ -176,17 +170,6 @@ app.layout = html.Div([
                 labelClassName="mapControls",
                 inputStyle={"z-index": "1"}
             ),
-            dcc.Checklist(
-                id='incidentTypeControls',
-                options=[
-                    {'label': 'FELONY', 'value': 'fel'},
-                    {'label': 'MISDEMEANOR', 'value': 'mis'},
-                    {'label': 'VIOLATION', 'value': 'vio'}
-                ],
-                values=['fel', 'mis', 'vio'],
-                labelClassName='incidentTypeControls',
-                inputStyle={'z-index': '1'}
-            ),
         ], className="graphSlider ten columns offset-by-one"),
     ])
 ], style={"backgroundColor": "rgb(0, 0, 0)"})
@@ -211,24 +194,10 @@ def getIndex(value):
     return val
 
 
-def all_races(arg1, arg2):
-    x = totalList[getIndex(arg1)][arg2].SUSP_RACE
-    return x
 
-
-def all_ages(arg1, arg2):
-    x = totalList[getIndex(arg1)][arg2].SUSP_AGE_GROUP
-    return x
-
-
-def all_sexes(arg1, arg2):
-    x = totalList[getIndex(arg1)][arg2].SUSP_SEX
-    return x
-
-
-def getRace(value, *args):
+def getRace(value): 
     if(value==None):
-        return all_races(*args)
+        return 'BLACK'
     val = {
         'Bl': 'BLACK',
         'Whh': 'WHITE HISPANIC',
@@ -236,32 +205,29 @@ def getRace(value, *args):
         'As': 'ASIAN/PAC.ISL',
         'Blh': 'BLACK HISPANIC',
         'Am': 'AMER IND',
-        'all': all_races(*args)
     }[value]
     return val
 
 
-def getAge(value, *args):
+def getAge(value):
     if(value==None):
-        return all_ages(*args)
+        return '18-24'
     val = {
         'u18': '<18',
         'u24': '18-24',
         'u44': '25-44',
         'u64': '45-64',
         'a65': '65+', 
-        'all': all_ages(*args)
     }[value]
     return val
 
 
-def getSex(value, *args):
+def getSex(value):
     if(value==None):
         return 'M'
     val = {
         'f': 'F',
-        'm': 'M', 
-        'both': all_sexes(*args)
+        'm': 'M',
     }[value]
     return val
 
@@ -284,24 +250,7 @@ def getClickIndex(value):
         return 0
     return value['points'][0]['x']
 
-
-'''@app.callback(Output("my-slider", "marks"),
-              [Input("my-dropdown", "value")])
-def update_slider_ticks(value):
-    for i in range(0, getValue(value)+1):
-        if (i is 0 or i is getValue(value)):
-            marks.update({i: '{}'.format(marks[value])})
-        else:
-            marks.update({i: '{}'.format(i)})
-    return marks
-
-
-@app.callback(Output("my-slider", "max"),
-              [Input("my-dropdown", "value")])
-def update_slider_max(value):
-    return getValue(value)'''
-
-
+# dropdown selector ->  selected
 @app.callback(Output("bar-selector", "value"),
               [Input("histogram", "selectedData")])
 def update_bar_selector(value):
@@ -313,6 +262,7 @@ def update_bar_selector(value):
     return holder
 
 
+# total number
 @app.callback(Output("total-rides", "children"),
               [Input("my-dropdown", "value"), 
                Input('my-slider', 'value')]
@@ -321,24 +271,29 @@ def update_total_rides(value, slider_value):
     return ("Total # of incidents: {:,d}".format(len(totalList[getIndex(value)][slider_value])))
 
 
+# dropdowns + slider -> # of selected crimes from selected month 
 @app.callback(Output('total-rides-selection', 'children'),
               [Input('my-dropdown', 'value'), 
                Input('my-slider', 'value'),
-               Input('bar-selector', 'value')]
+               Input('bar-selector', 'value'),
+               Input('race-dropdown', 'value'),
+               Input('age-dropdown', 'value'),
+               Input('sex-dropdown', 'value')]
 )
-def update_total_rides_selection(value, slider_value, selection):
+def update_total_rides_selection(value, slider_value, selection, race_value, age_value, sex_value):
     if (selection is None or len(selection) is 0):
         return ""
     totalInSelction = 0
     for x in selection:
-        totalInSelction += len(totalList[getIndex(value)]
-                                         [slider_value]
-                                         [totalList[getIndex(value)]
-                                                [slider_value].index.hour == int(x)])
+        totalInSelction += len(totalList[getIndex(value)][slider_value]
+                               [(totalList[getIndex(value)][slider_value].index.hour == int(x)) & 
+                                (totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(race_value)) &
+                                (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(age_value)) &
+                                (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(sex_value))])
     return ('Total incidents in selection: {:,d}'
             .format(totalInSelction))                                     
 
-
+# dropdown + slider -> selected day and hours
 @app.callback(Output('date-value', 'children'),
               [Input('my-dropdown', 'value'), Input('my-slider', 'value'),
                Input('bar-selector', 'value')]
@@ -384,9 +339,9 @@ def make_pie(value, slider_value, race_value, age_value, sex_value):
         'QUEENS': '#de5959'
     }
     
-    boros_dict = totalList[getIndex(value)][slider_value].BORO_NM[(totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(race_value, value, slider_value))
-                                                                 & (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(age_value, value, slider_value))
-                                                                 & (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(sex_value, value, slider_value))].value_counts().to_dict()
+    boros_dict = totalList[getIndex(value)][slider_value].BORO_NM[(totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(race_value))
+                                                                 & (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(age_value))
+                                                                 & (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(sex_value))].value_counts().to_dict()
 
     
     labels = list(boros_dict.keys())
@@ -431,14 +386,14 @@ def make_pie(value, slider_value, race_value, age_value, sex_value):
     )
     return figure
 
-
+# just clean
 @app.callback(Output('histogram', 'selectedData'),
               [Input('my-dropdown', 'value')])
 def clear_selection(value):
     if(value is None or len(value) is 0):
         return None
 
-
+# bar selector -> annotation
 @app.callback(Output('popupAnnotation', 'children'),
               [Input('bar-selector', 'value')])
 def clear_selection1(value):
@@ -447,8 +402,8 @@ def clear_selection1(value):
     else:
         return ''
 
-
-def get_selection(value, slider_value, selection):
+# bar colors
+def get_selection(value, slider_value, selection, race_value, age_value, sex_value):
     xVal = []
     yVal = []
     xSelected = []
@@ -465,20 +420,24 @@ def get_selection(value, slider_value, selection):
         if i in xSelected and len(xSelected) < 24:
             colorVal[i] = ('#ffffff')
         xVal.append(i)
-        yVal.append(len(totalList[getIndex(value)][slider_value]
-                    [totalList[getIndex(value)][slider_value].index.hour == i]))
+        yVal.append(len(totalList[getIndex(value)][slider_value] \
+                    [(totalList[getIndex(value)][slider_value].index.hour == i) \
+                    & (totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(race_value)) \
+                    & (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(age_value)) \
+                    & (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(sex_value))]))
 
     return [np.array(xVal), np.array(yVal), np.array(xSelected), np.array(colorVal)]
 
 
-
+# dropdowns + slider - > updated histogram
 @app.callback(Output('histogram', 'figure'),
               [Input('my-dropdown', 'value'), Input('my-slider', 'value'),
-               Input('bar-selector', 'value')]
+               Input('bar-selector', 'value'), Input('race-dropdown', 'value'),
+               Input('age-dropdown', 'value'), Input('sex-dropdown', 'value')]
 )
-def update_histogram(value, slider_value, selection):
+def update_histogram(value, slider_value, selection, race_value, age_value, sex_value):
 
-    [xVal, yVal, xSelected, colorVal] = get_selection(value, slider_value, selection)
+    [xVal, yVal, xSelected, colorVal] = get_selection(value, slider_value, selection, race_value, age_value, sex_value)
 
     layout = go.Layout(
         bargap=0,
@@ -499,7 +458,7 @@ def update_histogram(value, slider_value, selection):
             ticksuffix=':00'
         ),
         yaxis=dict(
-            range=[0, max(yVal)+max(yVal)/2],
+            range=[0, max(yVal)+max(yVal)/4],
             showticklabels=False,
             showgrid=False,
             fixedrange=True,
@@ -540,7 +499,7 @@ def update_histogram(value, slider_value, selection):
                     hoverinfo="none",
                     mode='markers',
                     marker=dict(
-                        color='rgb(66, 134, 244)',
+                        color='rgb(66, 134, 244, 0)',
                         symbol="square",
                         size=40
                     ),
@@ -548,37 +507,48 @@ def update_histogram(value, slider_value, selection):
                 )
             ], layout=layout)
 
-
-def get_lat_lon_color(selectedData, value, slider_value):
-    listStr = 'totalList[getIndex(value)][slider_value-1]'
+# color scatter points on map
+def get_lat_lon_color(selectedData, value, slider_value, race_value, age_value, sex_value):
+    listStr = 'totalList[getIndex(value)][slider_value][(totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(race_value)) & \
+                                                       (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(age_value)) & \
+                                                       (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(sex_value))]'
     if(selectedData is None or len(selectedData) is 0):
         return listStr
-    elif(int(selectedData[len(selectedData)-1])-int(selectedData[0])+2 == len(selectedData)+1 and len(selectedData) > 2):
-        listStr += "[(totalList[getIndex(value)][slider_value-1].index.hour>"+str(int(selectedData[0]))+") & \
-                    (totalList[getIndex(value)][slider_value-1].index.hour<" + str(int(selectedData[len(selectedData)-1]))+")]"
+    elif(int(selectedData[len(selectedData) - 1]) - int(selectedData[0]) + 2 == len(selectedData) + 1 and len(selectedData) > 2):
+        listStr = 'totalList[getIndex(value)][slider_value][(totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(race_value)) & \
+                                                       (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(age_value)) & \
+                                                       (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(sex_value)) & \
+                                                       (totalList[getIndex(value)][slider_value].index.hour >' +  str(int(selectedData[0])) + ') & \
+                                                       (totalList[getIndex(value)][slider_value].index.hour <' + str(int(selectedData[len(selectedData)-1])) + ')]'
     else:
-        listStr += "["
+        listStr = 'totalList[getIndex(value)][slider_value][(totalList[getIndex(value)][slider_value].SUSP_RACE == getRace(race_value)) & \
+                                                       (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(age_value)) & \
+                                                       (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(sex_value)) & ('
         for point in selectedData:
+            listStr += '(totalList[getIndex(value)][slider_value].index.hour == ' + str(int(point))
             if (selectedData.index(point) is not len(selectedData)-1):
-                listStr += "(totalList[getIndex(value)][slider_value-1].index.hour==" + str(int(point)) + ") | "
+                #listStr += '(totalList[getIndex(value)][slider_value].index.hour == ' + str(int(point)) + ') | '
+                listStr += ') | '
             else:
-                listStr += "(totalList[getIndex(value)][slider_value-1].index.hour==" + str(int(point)) + ")]"
-
+                listStr += '))]'
+                #listStr += '(totalList[getIndex(value)][slider_value].index.hour == ' + str(int(point)) + '))]'
+    
     return listStr
 
-
+# update map
 @app.callback(Output('map-graph', 'figure'),
               [Input('my-dropdown', 'value'), Input('my-slider', 'value'),
-              Input('bar-selector', 'value')],
+              Input('bar-selector', 'value'), Input('race-dropdown', 'value'),
+              Input('age-dropdown', 'value'), Input('sex-dropdown', 'value')],
               [State('map-graph', 'relayoutData'),
                State('mapControls', 'values')])
-def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
-    zoom = 12.0
+def update_graph(value, slider_value, selectedData, race_value, age_value, sex_value, prevLayout, mapControls):
+    zoom = 10.0
     latInitial = 40.7272
     lonInitial = -73.991251
     bearing = 0
 
-    listStr = get_lat_lon_color(selectedData, value, slider_value)
+    listStr = get_lat_lon_color(selectedData, value, slider_value, race_value, age_value, sex_value)
 
     if (prevLayout is not None and mapControls is not None and 'lock' in mapControls):
         zoom = float(prevLayout['mapbox']['zoom'])
@@ -597,8 +567,8 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                     color=np.append(np.insert(eval(listStr).index.hour, 0, 0), 23),
                     colorscale='Viridis',
                     reversescale=True,
-                    opacity=0.5,
-                    size=5,
+                    opacity=0.8,
+                    size=7,
                     colorbar=dict(
                         thicknessmode='fraction',
                         title='Time of<br>Day',
@@ -639,7 +609,7 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                     lat=latInitial,
                     lon=lonInitial
                 ),
-                style='mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n',
+                style='mapbox://styles/mihalw28/cjnd1ec810css2sqysrb7wohr',
                 bearing=bearing,
                 zoom=zoom
             ),
@@ -652,13 +622,13 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 'mapbox.center.lon': '-73.991251',
                                 'mapbox.center.lat': '40.7272',
                                 'mapbox.bearing': 0, 
-                                'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
+                                'mapbox.style': 'mapbox://styles/mihalw28/cjnd1ec810css2sqysrb7wohr'
                             }],
                             label='Reset Zoom',
                             method='relayout'
                         )
                     ]),
-                    direction='left',
+                    #direction='left',
                     pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
                     showactive=False,
                     type='buttons',
@@ -681,13 +651,12 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 'mapbox.center.lon': '-73.974',
                                 'mapbox.center.lat': '40.781',
                                 'mapbox.bearing': 0,
-                                'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
+                                'mapbox.style': 'mapbox://styles/mihalw28/cjnd1ec810css2sqysrb7wohr'
                                 }],
                             label='Manhattan',
                             method='relayout'
                         ),  
                     ]),
-                    #direction="down",
                     pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
                     showactive=False,
                     bgcolor="rgb(50, 49, 48, 0)",
@@ -709,13 +678,12 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 'mapbox.center.lon': '-73.898',
                                 'mapbox.center.lat': '40.857',
                                 'mapbox.bearing': 0,
-                                'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
+                                'mapbox.style': 'mapbox://styles/mihalw28/cjnd1ec810css2sqysrb7wohr'
                                 }],
                             label='Bronx',
                             method='relayout'
                         ),  
                     ]),
-                    #direction="down",
                     pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
                     showactive=False,
                     bgcolor="rgb(50, 49, 48, 0)",
@@ -737,13 +705,12 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 'mapbox.center.lon': '-73.957',
                                 'mapbox.center.lat': '40.659',
                                 'mapbox.bearing': 0,
-                                'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
+                                'mapbox.style': 'mapbox://styles/mihalw28/cjnd1ec810css2sqysrb7wohr'
                                 }],
                             label='Brooklyn',
                             method='relayout'
                         ),  
                     ]),
-                    #direction="down",
                     pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
                     showactive=False,
                     bgcolor="rgb(50, 49, 48, 0)",
@@ -765,13 +732,12 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 'mapbox.center.lon': '-74.165',
                                 'mapbox.center.lat': '40.585',
                                 'mapbox.bearing': 0,
-                                'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
+                                'mapbox.style': 'mapbox://styles/mihalw28/cjnd1ec810css2sqysrb7wohr'
                                 }],
                             label='Staten Island',
                             method='relayout'
                         ),  
                     ]),
-                    #direction="down",
                     pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
                     showactive=False,
                     bgcolor="rgb(50, 49, 48, 0)",
@@ -793,13 +759,12 @@ def update_graph(value, slider_value, selectedData, prevLayout, mapControls):
                                 'mapbox.center.lon': '-73.827',
                                 'mapbox.center.lat': '40.716',
                                 'mapbox.bearing': 0,
-                                'mapbox.style': 'mapbox://styles/mihalw28/cjmrjsycy0m1r2snnp9kkl14n'
+                                'mapbox.style': 'mapbox://styles/mihalw28/cjnd1ec810css2sqysrb7wohr'
                                 }],
                             label='Queens',
                             method='relayout'
                         ),  
                     ]),
-                    #direction="down",
                     pad={'r': 0, 't': 0, 'b': 0, 'l': 0},
                     showactive=False,
                     bgcolor="rgb(50, 49, 48, 0)",

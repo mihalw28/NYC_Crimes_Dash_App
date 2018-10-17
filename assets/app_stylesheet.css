@@ -108,18 +108,6 @@ body {
     fill-opacity: 0.8
 }
 
-
-.incidentTypeControls{
-    display: block;
-    position: absolute;
-    top: 22%;
-    left: 9.5%;
-    z-index: 2;
-    color: white;
-}
-
-
-
 .graphSlider h2{
     top: 20px;
     padding-left: 7px;
