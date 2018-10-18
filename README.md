@@ -1,7 +1,7 @@
 ## NYC_Crimes_Dash_App
 This repository contains Dash application of NYC crimes from early 2018. :policewoman: :police_car: :policeman:
 
-![](https://github.com/mihalw28/NYC_Crimes_Dash_App/blob/master/Animation.gif)
+![](https://github.com/mihalw28/NYC_Crimes_Dash_App/blob/master/gif/Animation.gif)
 
 ### Motivation
 Building and deploying* interactive web-based application is the culmination of my [NYC_crimes_2018](https://github.com/mihalw28/NYC_crimes_2018) project. 
