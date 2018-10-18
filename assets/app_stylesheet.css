@@ -7,7 +7,7 @@
     width: 100%;
     border-radius: 6px;
     box-sizing: border-box;
-    -webkit-tap-highlight-color: rgba(114, 16, 16, 0);
+    -webkit-tap-highlight-color: rgba(61, 65, 19, 0);
 }
 
 .graphSlider .rc-slider-dot-active{
@@ -20,7 +20,7 @@
 }
 
 .graphSlider .rc-slider-mark-text{
-  color: #828282;
+  color: #3f3e3e;
 }
 
 .graphSlider .rc-slider-handle{
@@ -56,7 +56,7 @@
     position: relative;
     display: block;
     top: 785px;
-    left: 17px;
+    left: 11px;
     color: rgb(255, 255, 255);
     cursor: default;
     z-index: 1;
@@ -65,7 +65,7 @@
 
 .graphSlider .mySlider{
     position: relative;
-    top: 30px;
+    top: 20px;
     z-index: 1;
 }
 
@@ -73,6 +73,7 @@
     position: relative;
     top: 0;
     margin: 0;
+    z-index: 2;
 }
 
 .graphSlider .graph .js-plotly-plot .cursor-pointer{
@@ -102,36 +103,32 @@ body {
 .pie {
     position: absolute;
     top: 600px;
-    left: 15px;
+    left: 11px;
     width: 250px;
     z-index: 3;
     fill-opacity: 0.8
 }
 
 .graphSlider h2{
-    top: 20px;
+    top: 15px;
     padding-left: 7px;
     position: absolute;
 }
 
 .graphSlider .explanationParagraph{
-    margin: auto auto;
-    top: 65px;
+    margin: 30px 0px;
+    top: 60px;
     padding-left: 7px;
     position: absolute;
-}
-
-.source {
-  padding-top: 30px;
 }
 
 .popupAnnotation {
     margin: 0;
     position: relative;
-    z-index: 1;
+    z-index: 2;
     bottom: 250px;
-    padding-left: 15px;
-    color: white;
+    padding-left: 11px;
+    color: rgb(255, 255, 255);
     display: block;
     cursor: default;
     display: inline;
@@ -140,7 +137,7 @@ body {
 .Select{
     padding-left: 0px;
     padding-right: 0px;
-    z-index: 2;
+    z-index: 3;
 }
 
 .Select-menu-outer{
