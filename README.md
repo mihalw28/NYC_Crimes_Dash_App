@@ -4,7 +4,7 @@ This repository contains Dash application of NYC crimes from early 2018. :police
 ![](https://github.com/mihalw28/NYC_Crimes_Dash_App/blob/master/Animation.gif)
 
 ### Motivation
-Building and deployign* interactive web-based application is the culmination of my [NYC_crimes_2018](https://github.com/mihalw28/NYC_crimes_2018) project. 
+Building and deploying* interactive web-based application is the culmination of my [NYC_crimes_2018](https://github.com/mihalw28/NYC_crimes_2018) project. 
 
 ### General info
 Application from this repo is based on [Dash - Uber Data App](https://dash-uber-rides.plot.ly/) :oncoming_taxi: source code. Main concepts are similar. This app is based on data created using code from [NYC_crimes_2018](https://github.com/mihalw28/NYC_crimes_2018).
