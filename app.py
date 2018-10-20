@@ -14,6 +14,7 @@ import os
 
 
 
+
 app = dash.Dash('CrimesApp')
 server = app.server
 
@@ -778,6 +779,9 @@ external_css = ["https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.
 
 for css in external_css:
     app.css.append_css({"external_url": css})
+
+
+app.scripts.append_script({'external_url': 'https://www.googletagmanager.com/gtag/js?id=UA-127839517-1'})
 
 
 @app.server.before_first_request
