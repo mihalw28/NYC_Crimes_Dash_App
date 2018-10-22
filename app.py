@@ -18,6 +18,11 @@ import os
 app = dash.Dash('CrimesApp')
 server = app.server
 
+if 'DYNO' in os.environ:
+    app.scripts.append_script({
+        'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/gtag.js'
+    })
+
 mapbox_access_token = 'pk.eyJ1IjoibWloYWx3MjgiLCJhIjoiY2psejZqZThnMXRndDNxcDFpdWh6YnV2NCJ9.IGbFZyg0dcy61geuwJUByw'
 
 
@@ -34,8 +39,6 @@ def initialize():
             dailyList.append(weekday[1])
         totalList.append(dailyList)
     return np.array(totalList)
-
-app.scripts.append_script({'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/gtag.js'})
 
 app.layout = html.Div([
     html.Div([
