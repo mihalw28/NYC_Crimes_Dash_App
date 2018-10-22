@@ -12,13 +12,9 @@ import numpy as np
 import os
 
 
-external_scripts = [
-    'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/assets/gtag.js'
-]
 
 
-app = dash.Dash('CrimesApp',
-                external_scripts=external_scripts)
+app = dash.Dash('CrimesApp')
 server = app.server
 
 if 'DYNO' in os.environ:
