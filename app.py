@@ -13,8 +13,6 @@ import os
 
 
 
-
-
 app = dash.Dash('CrimesApp')
 server = app.server
 
