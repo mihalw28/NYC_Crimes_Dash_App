@@ -18,7 +18,7 @@ external_Scripts = [
 
 
 app = dash.Dash('CrimesApp',
-                external_scripts=external_scripts)
+                external_scripts=external_Scripts)
 server = app.server
 
 #if 'DYNO' in os.environ:
