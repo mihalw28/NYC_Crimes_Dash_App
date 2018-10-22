@@ -12,40 +12,20 @@ import numpy as np
 import os
 
 
-external_Scripts = [
+external_scripts = [
     'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/assets/gtag.js'
 ]
 
 
 app = dash.Dash('CrimesApp',
-                external_scripts=external_Scripts)
+                external_scripts=external_scripts)
 server = app.server
 
-#if 'DYNO' in os.environ:
- #   app.scripts.append_script({
-  #      'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/assets/gtag.js'
-   # })
+if 'DYNO' in os.environ:
+    app.scripts.append_script({
+        'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/assets/gtag.js'
+    })
 
-app.index_string = '''
-<!DOCTYPE html>
-<html>
-    <head>
-        {%metas%}
-        <title>{%title%}</title>
-        {%favicon%}
-        {%scripts%}
-        {%css%}
-    </head>
-    <body>
-        <div>My Custom header</div>
-        {%app_entry%}
-        <footer>
-            {%config%}   
-        </footer>
-        <div>My Custom footer</div>
-    </body>
-</html>
-'''
 
 mapbox_access_token = 'pk.eyJ1IjoibWloYWx3MjgiLCJhIjoiY2psejZqZThnMXRndDNxcDFpdWh6YnV2NCJ9.IGbFZyg0dcy61geuwJUByw'
 
