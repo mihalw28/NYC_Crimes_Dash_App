@@ -20,7 +20,7 @@ server = app.server
 
 if 'DYNO' in os.environ:
     app.scripts.append_script({
-        'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/gtag.js'
+        'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/assets/gtag.js'
     })
 
 mapbox_access_token = 'pk.eyJ1IjoibWloYWx3MjgiLCJhIjoiY2psejZqZThnMXRndDNxcDFpdWh6YnV2NCJ9.IGbFZyg0dcy61geuwJUByw'
