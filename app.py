@@ -517,7 +517,6 @@ def get_lat_lon_color(selectedData, value, slider_value, race_value, age_value, 
                     (totalList[getIndex(value)][slider_value].SUSP_AGE_GROUP == getAge(age_value)) & \
                     (totalList[getIndex(value)][slider_value].SUSP_SEX == getSex(sex_value)) & ('
         for point in selectedData:
-            #listStr += '(totalList[getIndex(value)][slider_value].index.hour == ' + str(int(point))
             if (selectedData.index(point) is not len(selectedData) - 1):
                 listStr += '(totalList[getIndex(value)][slider_value].index.hour == ' + str(int(point)) + ') | '
             else:
@@ -781,7 +780,7 @@ for css in external_css:
     app.css.append_css({"external_url": css})
 
 
-app.scripts.append_script({'external_url': 'https://www.googletagmanager.com/gtag/js?id=UA-127839517-1'})
+app.scripts.append_script({'external_url': 'https://www.google-analytics.com/analytics.js'})
 
 
 @app.server.before_first_request
