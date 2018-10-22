@@ -1,28 +1,7 @@
-(function(i, s, o, g, r, a, m){
-    i['GoogleAnalyticsObject'] = r; // Acts as a pointer to support renaming.
-  
-    // Creates an initial ga() function.
-    // The queued commands will be executed once analytics.js loads.
-    i[r] = i[r] || function() {
-      (i[r].q = i[r].q || []).push(arguments)
-    },
-  
-    // Sets the time (as an integer) this tag was executed.
-    // Used for timing hits.
-    i[r].l = 1 * new Date();
-  
-    // Insert the script tag asynchronously.
-    // Inserts above current tag to prevent blocking in addition to using the
-    // async attribute.
-    a = s.createElement(o),
-    m = s.getElementsByTagName(o)[0];
-    a.async = 1;
-    a.src = g;
-    m.parentNode.insertBefore(a, m)
-  })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
-  
-  // Creates a default tracker with automatic cookie domain configuration.
-  ga('create', 'UA-127839517-1', 'auto');
-  
-  // Sends a pageview hit from the tracker just created.
-  ga('send', 'pageview');
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+    })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+    
+    ga('create', 'UA-127839517-1', 'auto');
+    ga('send', 'pageview');
