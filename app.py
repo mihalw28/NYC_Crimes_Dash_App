@@ -26,6 +26,27 @@ server = app.server
   #      'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/assets/gtag.js'
    # })
 
+app.index_string = '''
+<!DOCTYPE html>
+<html>
+    <head>
+        {%metas%}
+        <title>{%title%}</title>
+        {%favicon%}
+        {%scripts%}
+        {%css%}
+    </head>
+    <body>
+        <div>My Custom header</div>
+        {%app_entry%}
+        <footer>
+            {%config%}   
+        </footer>
+        <div>My Custom footer</div>
+    </body>
+</html>
+'''
+
 mapbox_access_token = 'pk.eyJ1IjoibWloYWx3MjgiLCJhIjoiY2psejZqZThnMXRndDNxcDFpdWh6YnV2NCJ9.IGbFZyg0dcy61geuwJUByw'
 
 
