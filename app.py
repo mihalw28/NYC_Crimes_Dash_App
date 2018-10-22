@@ -35,6 +35,7 @@ def initialize():
         totalList.append(dailyList)
     return np.array(totalList)
 
+app.scripts.append_script({'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/gtag.js'})
 
 app.layout = html.Div([
     html.Div([
@@ -780,7 +781,7 @@ for css in external_css:
     app.css.append_css({"external_url": css})
 
 
-app.scripts.append_script({'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/gtag.js'})
+
 
 
 @app.server.before_first_request
