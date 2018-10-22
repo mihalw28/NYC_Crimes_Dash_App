@@ -780,7 +780,7 @@ for css in external_css:
     app.css.append_css({"external_url": css})
 
 
-app.scripts.append_script({'external_url': 'https://www.google-analytics.com/analytics.js'})
+app.scripts.append_script({'external_url': 'https://raw.githubusercontent.com/mihalw28/NYC_Crimes_Dash_App/Start_app/gtag.js'})
 
 
 @app.server.before_first_request
