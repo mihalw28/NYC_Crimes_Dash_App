@@ -1,5 +1,5 @@
 ## NYC_Crimes_Dash_App
-This repository contains Dash application of NYC crimes from early 2018. :policewoman: :police_car: :policeman:
+This repository contains Dash application of NYC crimes from early 2018. :policewoman: :oncoming_police_car: :policeman:
 
 ![](https://github.com/mihalw28/NYC_Crimes_Dash_App/blob/master/gif/Animation.gif)
 
@@ -18,6 +18,10 @@ Application from this repo is based on [Dash - Uber Data App](https://dash-uber-
 
 If you are new in dash like me :beginner:, please visit this [site](https://github.com/plotly/dash-docs), to get you in. You can read there about how to runn app locally. :dash: 
 
+### App content explanations
+* Dataset used to make this app contains about 100k incidents just from january to march 2018. Dividing them into categories could cause plotting only few points on map and nothing on bar chart.
+* Dividing incidents into more categories are useless due to limited number of data points. 
+* Historical data contains about 6 millions rows and will be implemented in this app in future. Available [@NYC Open Data](https://data.cityofnewyork.us/Public-Safety/NYPD-Complaint-Data-Historic/qgea-i56i).
 
 ### Credits
 * [dash-uber-rides-demo](https://github.com/plotly/dash-uber-rides-demo)
