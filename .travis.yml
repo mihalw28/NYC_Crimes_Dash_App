@@ -6,4 +6,6 @@ python:
 
 script:
 
-  - python app.py
+  - app.py
+
+install: travis_wait mvn install
