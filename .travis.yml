@@ -1,3 +1,5 @@
+install: travis_wait mvn install
+
 language: python
 
 python:
@@ -8,4 +10,3 @@ script:
 
   - app.py
 
-install: travis_wait mvn install
